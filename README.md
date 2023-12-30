@@ -50,4 +50,7 @@
 >> 6.用户空间和内核空间"printf"的区别  
 >>> "uartputc"和"uartputc_sync"分别是用户空间和内核空间"printf"最终调用的函数，区别在于是否启用中断。"uartputc"启用中断，而"uartputc_sync"不启用，可能是因为内核空间的输出信息需要快速被注意到。  
 >>> 用户空间的"printf": printf --> write --> sys_write --> filewrite --> consolewrite --> uartputc (cons.lock)  
->>> 内核空间的"printf": printf --> consputc --> uartputc_sync (pr.lock)
+>>> 内核空间的"printf": printf --> consputc --> uartputc_sync (pr.lock)  
+
+> ## 2. Locks
+>> 
