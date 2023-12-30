@@ -52,5 +52,19 @@
 >>> 用户空间的"printf": printf --> write --> sys_write --> filewrite --> consolewrite --> uartputc (cons.lock)  
 >>> 内核空间的"printf": printf --> consputc --> uartputc_sync (pr.lock)  
 
-> ## 2. Locks
->> 
+> ## 2. Locks  
+>> 1.使用锁的原因  
+>>> 多个CPU上并行执行程序、单个CPU上的线程切换、中断处理程序，这些情况引起的对于共同内存的访问
+
+>> 2.使用锁的意义  
+>>> (1) locks help avoid lost updates  
+>>> (2) locks make multi-step operations atmoic  
+>>> (3) locks maintain an invariant ("invariant"是一些变量或属性，在执行的过程中可能会暂时违背，但是某个操作结束时能恢复到正确的情况，在单线程的情况下没有问题。但是多线程时，如果不使用lock，"invariant"会在暂时不正确的条件下，被其他线程使用，造成错误。使用"lock"，可以保护"invariant"，确保多线程程序正确运行)
+
+>> 3.内存屏障(__sync_synchronize())  
+>>> 如果没有内存屏障，编译器可能将临界区中的指令重排序到锁的外部，在并发执行时一定会发生错误；如果有内存屏障，屏障内外的指令无法越过屏障，这样才可以确保正确（需要注意的是，屏障内的指令仍可能被重排序，但这时没关系，因为处于临界区中，没有别的线程打扰，编译器即使重排序也可以保证结果的正确性）。  
+
+>> 4.一些总结
+>>> (1) 如果不是必须，不要使用锁，因为锁会降低性能；除非真的出现了"sharing"
+>>> (2) 对于锁的优化可以从"corase-grained"到"fine-grained"，但是中间过程可能会比较复杂，最后需要衡量正确性与高效性  
+
