@@ -44,7 +44,7 @@
 >>> (g5)很多设备在中断和轮询的状态间合理切换
 
 >> 4.timervec  
->>> 主要做的事情是：当应当发生时钟中断的时刻到达时，切换到机器模式(machine mode)下，在某个固定地址"CLINT_MTIMECMP(hart)"写入下一次时钟中断的时间，并发出时钟中断，回退到之前的状态。接着就是正常的处理时钟中断的流程(usertrap/kerneltrap
+>>> 主要做的事情是：当应当发生时钟中断的时刻到达时，切换到机器模式(machine mode)下，在某个固定地址"CLINT_MTIMECMP(hart)"写入下一次时钟中断的时间，并发出时钟中断。接着就是正常的处理时钟中断的流程(usertrap/kerneltrap
 >>> --> yield --> swtch ...)
 
 >> 5.printf (kernel中的printf)   
