@@ -18,7 +18,7 @@
 >>> 同理MTVEC是进入"machine mode"时pc的切换地址；  
 >>> SCAUSE寄存器保存了此次trap的原因  
 
->> 3.关于xv6中的uart(真实的物理设备)和console(虚拟设备)，因此两者都有各自的驱动程序(uart.c和console.c)，两者的大致关系如下图：
+>> 3.关于xv6中的uart(真实的物理设备)和console(虚拟设备)，都是设备，因此两者都有各自的驱动程序(uart.c和console.c)，两者的大致关系如下图：
 >>> ![](https://github.com/2351889401/Summary-about-Interrupts-Locks-and-Scheduling./blob/main/images/uart.png)
 >>> 图中：RHR寄存器，1字节，完成"<--"方向的数据传输，当RHR寄存器收到1字节数据产生中断；THR寄存器，1字节，完成"-->"方向的数据传输，当THR寄存器传输完成时产生中断
 >>>   
