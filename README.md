@@ -72,7 +72,7 @@
 >>> (2) 对于锁的优化可以从"corase-grained"到"fine-grained"，但是中间过程可能会比较复杂，最后需要衡量正确性与高效性  
 
 >> 5."spinlock"(自旋锁)与"sleeplock"(睡眠锁)
->>> (1) "spinlock"：在"acquire"和"release"之间会关中断，启用内存屏障，通过CPU自旋等待资源可用。"acquire"和"release"之间的临界区可以理解为一个原子操作，因为关中断了。
+>>> (1) "spinlock"：在"acquire"和"release"之间会关中断，启用内存屏障，通过CPU自旋等待资源可用。"acquire"和"release"之间的临界区可以理解为一个原子操作，因为关中断了。  
 >>> (2) "sleeplock"：定义"sleeplock"的数据结构包含"spinlock"，也就是基于"spinlock"实现睡眠锁。"spinlock"必须在资源可用时才能获取到，而"sleeplock"可以在资源不可用时获取内部定义的"spinlock"；但是，由于资源实际不可用，所以会主动释放内部的"spinlock"，进入"sleep"状态，因为现在没有可用资源，应当主动放弃CPU。
 >>> 这样，其他线程的"acquiresleep"也可以进行了，只是由于没有资源，都会进入"sleep"的状态。
 >>> "acquire"和"release"之间为原子操作，而"acquiresleep"和"releasesleep"之间不应当是原子操作，因为会主动释放CPU。
