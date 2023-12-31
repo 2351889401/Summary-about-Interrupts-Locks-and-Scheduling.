@@ -69,4 +69,28 @@
 >>> (2) 对于锁的优化可以从"corase-grained"到"fine-grained"，但是中间过程可能会比较复杂，最后需要衡量正确性与高效性  
 
 > ## 3. Scheduling  
->> 1. 
+>> 1. "scheduler()"函数的核心"swtch(struct context* old, struct context* new)"的思想  
+>>> 保存旧的内核线程的上下文、加载新的内核线程的上下文。
+>>> 这里的上下文，是指线程执行过程中需要的pc、registers、栈。其中，寄存器状态易失，而"栈"的内容一般处于内存(p->kernel_stack)中，不易失。因此，对于"上下文"的保存，**核心是保存好寄存器的状态**，至于栈内容的查找，依赖于"sp"寄存器即可查找到栈的位置。
+>>> 另外，上述的"swtch()"函数是汇编语言编写的函数，在内核代码中仅保存了"callee-saved registers"，没有保存"caller-saved registers"。本质上，无论是caller-saved registers还是callee-saved registers，在函数调用的过程中都是保存在栈上，只不过一类由caller函数负责保存和恢复，另一类由callee函数负责保存和恢复。如果是C语言函数调用C语言函数，编译器会帮助我们隐藏caller-saved和callee-saved寄存器的保存和恢复过程；而现在的情况是C语言函数调用汇编语言函数"swtch()"，编译器仅完成了caller-saved寄存器的保存，而callee-saved寄存器的保存和恢复需要在汇编函数"swtch()"实现。
+
+>> 2. "sleep"和"wakeup"机制，避免"lost wakeup"  
+>>> 以信号量的P和V操作为例，"sleep"和"wakeup"的主要流程是相似的:  
+>>> 在P操作的"sleep"释放"s->lock"之前，获取"p->lock"；这样，即使V操作获得了"s->lock"，想要执行"wakeup"("wakeup"也需要"p->lock")，但是由于P操作之前已经先拿到了"p->lock"，所以"唤醒"操作直到P操作真正完成"睡眠"才可以进行。这样，避免了"lost wakeup"。  
+```
+void P(struct semaphore* s) {
+  acquire(&s->lock);
+  while(s->count == 0) sleep(s, &s->lock);
+  s->count -= 1;
+  release(&s->lock);
+}
+
+void V(struct semaphore* s) {
+  acquire(&s->lock);
+  s->count += 1;
+  wakeup(s);
+  release(&s->lock);
+}
+```  
+
+>> 3.
