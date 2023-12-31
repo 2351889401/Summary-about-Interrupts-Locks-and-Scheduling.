@@ -11,7 +11,7 @@
 >>> (1)对硬件编程，使硬件可以发送中断  
 >>> (2)SIE(Supervisor Interrupt Enable，中断启用寄存器) 寄存器的配置(具体包括设置一些位：SIE_SEIE(外部中断)、SIE_SSIE(软件中断)、SIE_STIE(时钟中断)等)，在"start.c"中配置，表示内核启用相关中断。  
 >>> (3)配置PLIC(Platform Level Interrupt Controller)。因为中断是PLIC负责发送的，所以需要设置PLIC表示可以处理哪些类型的中断；另一方面，"plic.c"中为每个CPU设置可以处理哪些中断，这样PLIC才可以把对应的中断发送给相应的CPU。  
->>> (4)SSTATUS(Supervisor Status) 寄存器的配置(其中的一位SSTATUS_SIE表示该CPU启用/禁用中断)，位于CPU上，因为每个CPU都可以主动启用(intr_on)、禁用(intr_off)中断。
+>>> (4)SSTATUS(Supervisor Status) 寄存器的配置(其中的一位SSTATUS_SIE表示该CPU启用/禁用中断)，位于CPU上，因为每个CPU都可以主动启用(intr_on)、禁用(intr_off)中断。  
 >>> (5)其他的相关寄存器：SIP(Supervisor Interrupt Pending)，中断判定寄存器，进程可以根据该寄存器的内容得知此次中断的类型；STVEC寄存器，进入kernel时pc的切换地址，
 >>> 同理MTVEC是进入"machine mode"时pc的切换地址；SCAUSE寄存器保存了此次trap的原因  
 
